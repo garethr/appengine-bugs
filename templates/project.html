@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}{{project.name}} on GitBug{% endblock %}
+
+{% block header %}
+<div id="header">
+    <h1>{{project.name}}</h1>
+    <p>{{project.created_date|date:"jS F Y"}}</p>
+</div>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript" charset="utf-8">
+    $(function(){
+        $('#addissue').hide();
+        var more_link = $('<span class="fakelink">Add Issue</span>').click(function() {
+            $(this).hide();
+            $('#addissue').fadeIn();
+        }).prependTo('#content');
+        $('tbody tr a').parent().parent().click(function() {
+            window.location = $(this).find('a').attr('href');
+        });
+    });
+    
+</script>
+{% endblock %}
+
+{% block projects_nav %} class="this"{% endblock %}
+
+{% block content %}
+<div id="content">
+
+<form action="" method="post" id="addissue">
+    <div>
+        <label for="name">Name</label>
+        <input type="text" name="name" id="name" class="txt"/>
+    </div>
+    <div>
+        <label for="description">Description</label>
+        <textarea id="description" name="description"></textarea>
+    </div>
+    {% if user %}
+    <div>
+        <label for="email">Email</label>
+        <input type="text" name="email" id="email" value="{{user.email}}"  class="txt"/>
+        <p>If you would like to be alerted when this bug is fixed.</p>
+    </div>
+    {% endif %}
+    <input type="submit" value="Add issue"/>
+</form>
+
+{% include "_issues.html" %}
+
+{% if owner %}
+
+<div id="api">
+    <p>You can close bugs via a <a href="http://github.com">GitHub</a> style web hook. You'll need the following <em>details</em> and to include the issue identifier (eg. #gitbug1234) in the commit message.</p>
+    <div class="key">
+        <p><code>{{project.key}}</code></p>
+        <a href="http://gitbug.appspot.com/projects/{{project.slug}}/hook?key={{project.key}}">http://gitbug.appspot.com/projects/{{project.slug}}/hook?key={{project.key}}</a>
+    </div>
+</div>
+
+{% endif %}
+
+</div>
+{% endblock %}

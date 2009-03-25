@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}{{issue.name}} in {{issue.project.name}} on GitBug{% endblock %}
+
+{% block header %}
+<div id="header">
+    <h1>{{issue.name}} <span>from</span> <a href="/projects/{{issue.project.slug}}/">{{issue.project.name}}</a></h1>
+    <p>{{issue.created_date|date:"jS F Y"}}</p>
+</div>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript" charset="utf-8">
+    $(function(){
+        $('#fixed_description').parent().hide();
+        $('#fixed').click(function() {
+            var n = $("#fixed:checked").length;
+            if (n > 0) {
+                $('#fixed_description').parent().fadeIn();
+            } else{
+                $('#fixed_description').parent().hide();
+            }
+        });
+    });
+</script>
+{% endblock %}
+
+
+{% block content %}
+<div id="content">
+{% if issue.fixed %}
+    <p>issue fixed on {{issue.fixed_date|date:"jS F Y"}}</p>
+{% endif %}
+
+{{issue.html}}
+
+{% if owner %}
+
+<form action="" method="post" id="changeissue">
+    <div>
+        <label for="name">Name</label>
+        <input type="text" name="name" id="name" value="{{issue.name}}" class="txt"/>
+    </div>
+    <div>
+        <label for="description">Description</label>
+        <textarea id="description" name="description">{{issue.description}}</textarea>
+    </div>
+    <div>
+        <label for="email">Email</label>
+        <input type="text" name="email" id="email" value="{% if issue.email %}{{issue.email}}{% endif %}" class="txt"/>
+    </div>
+    <div>
+        <label for="fixed">Fixed</label>
+        <input type="checkbox" id="fixed" name="fixed" {% if issue.fixed %}checked="checked"{% endif %}/>
+    </div>
+    <div>
+        <label for="fixed_description">Fixed Description</label>
+        <textarea id="fixed_description" name="fixed_description">{% if issue.fixed_description %}{{issue.fixed_description}}{% endif %}</textarea>
+    </div>
+    
+    <input type="submit" value="Submit" class="btn"/>
+    <a href="delete/">Delete</a>
+</form>
+
+
+
+{% endif %}
+
+{% include "_issues_list.html" %}
+
+</div>
+{% endblock %}

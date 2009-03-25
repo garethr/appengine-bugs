@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}{% if user %}Your Projects on {% endif %}GitBug - A Very Simple Issue Tracker{% endblock %}
+
+{% block header %}
+{% if user %}
+<div id="header">
+    <h1>Your Projects</h1>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block home_nav %} class="this"{% endblock %}
+
+{% block content %}
+<div id="content">
+    
+{% if user %}
+<form action="/projects/" method="post" id="addproject">
+    <div>
+        <label for="name">Name</label>
+        <input type="text" name="name" id="name" class="txt"/>
+        <input type="submit" value="Add project" class="btn"/>
+    </div>
+</form>
+{% else %}
+
+{% endif %}
+
+{% include "_projects.html" %}
+
+</div>
+{% endblock %}

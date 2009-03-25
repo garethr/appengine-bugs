@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<head xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-GB" lang="en-GB">
+    <title>{% block title %}{% endblock %}</title>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+    
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
+
+    <link rel="stylesheet" href="/assets/css/reset.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/assets/css/main.css" type="text/css" media="screen" />
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.1/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+    
+    {% block script %}{% endblock %}
+
+</head>
+
+<body>
+    
+<div id="head">
+    
+    <div id="greeting">
+    {% if user %}
+        {{user.nickname}} (<a href="{{link}}">Sign out</a>)
+    {% else %}
+        <a href="{{link}}">Login or Sign up</a>
+    {% endif %}
+    </div>
+    
+    <div id="navigation">
+    <ul>
+        <li{% block home_nav %}{% endblock %}><a href="/">Home</a></li>
+        <li{% block projects_nav %}{% endblock %}><a href="/projects/">Projects</a></li>
+        <li{% block faq_nav %}{% endblock %}><a href="/faq/">FAQ</a></li>
+    </ul>
+    </div>
+    
+</div>
+    
+<div id="main">
+    
+    {% block header %}
+    {% endblock %}
+
+    {% block content %}
+    {% endblock %}
+
+</div>
+
+<div id="foot">
+    <p>GitBug was created by Gareth Rushgrove <a href="http://morethanseven.net">morethanseven.net</a></p>
+</div>
+
+
+</body>
+
+</html>

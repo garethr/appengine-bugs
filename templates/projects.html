@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Projects using GitBug{% endblock %}
+
+{% block projects_nav %} class="this"{% endblock %}
+
+{% block header %}
+<div id="header">
+    <h1>Projects</h1>
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="content">
+    {% include "_projects.html" %}
+</div>
+{% endblock %}

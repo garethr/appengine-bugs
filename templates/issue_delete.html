@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Confirm deletion of {{issue.name}} from {{issue.project.name}} on GitBug{% endblock %}
+
+{% block header %}
+<div id="header">
+    <h1>{{issue.name}} <span>from</span> <a href="/projects/{{issue.project.slug}}/">{{issue.project.name}}</a></h1>
+    <p>{{issue.created_date|date:"jS F Y"}}</p>
+</div>
+{% endblock %}
+
+{% block content %}
+
+{% if issue.fixed %}
+    <p>issue fixed on {{issue.fixed_date|date:"jS F Y"}}</p>
+{% endif %}
+
+{{issue.html}}
+
+{% if owner %}
+
+<form action="" method="post" id="deleteissue">
+    <input type="submit" value="Delete" class="btn"/>
+    <p>This will delete this issue for ever. Their is no undo.</p>
+</form>
+
+
+{% endif %}
+
+{% include "_issues_list.html" %}
+
+{% endblock %}

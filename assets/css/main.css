@@ -1,0 +1,217 @@
+body, html {
+    background: #ECECEC;
+}
+a, .fakelink {
+    text-decoration: none;
+    color: #369CD6;
+}
+a:hover, .fakelink:hover {
+    color: #7297A9;
+}
+.fakelink {
+    cursor: pointer;
+}
+
+/* =Layout */
+
+#main {
+    padding: 20px 30px;
+    background: #FFF;
+    clear: both;
+    border-bottom: 1px solid #CCC;
+}
+#head {
+    float: left;
+    width: 100%;
+    background: #191919;
+}
+#greeting {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+}
+#navigation {
+    
+}
+#header {
+    margin-bottom: 25px;
+}
+#foot {
+
+    margin: 10px;       
+}
+
+/* =Navigation */
+
+#head  {
+    font-size: 90%;    
+}
+#navigation ul li {
+    float: left;
+    border-left: 1px solid #232323;
+    padding: 5px 10px;
+}
+#greeting {
+    color: #555;  
+}
+#greeting a, #navigation ul li a {   
+    color: #777769;
+    text-decoration: none;
+}
+#navigation ul li.this { 
+    background: #111;
+}
+#greeting a:hover, #navigation ul li a:hover {   
+    color: #FFF;
+}
+
+/* =Detail */
+
+#content ul.projects li a {
+    font-size: 200%;
+}
+#content ul.projects li span {
+    font-size: 85%;
+    color: #777;
+    display: block;
+    margin-top: 2px;    
+}
+#content ul.projects li {
+    margin-bottom: 20px;
+}
+#header h1 {
+    font-size: 200%;
+    font-weight: bold;
+}
+#header h1 span {
+    font-weight: normal;
+    color: #777;
+}
+#header p {
+    color: #777;
+    font-size: 90%;
+}
+#content table thead th {
+    font-weight: bold;
+}
+#content table {
+    width: 100%;
+    border-top: 1px solid #CCC;
+    border-bottom: 1px solid #CCC;
+    margin: 30px 0;
+}
+#content table tbody tr {   
+    cursor: pointer;
+}
+#content table tbody tr:hover th, #content table tbody tr:hover td {
+    background: #DCDCDC;
+}
+#content table tr.alt th, #content table tr.alt td {
+    background: #ECECEC;
+}   
+#content table tr td, #content table tr th {
+    padding: 5px;
+}
+#content table tr td {
+    border-top: 1px solid #CCC;
+}
+#content table tr th {
+    border-top: 1px solid #CCC;
+
+ 
+}
+#content table tr thead {
+   
+}
+#content table tr thead th {
+   
+}
+#content table tr thead td {
+   
+}
+#content table tr tbody {
+   
+}
+#content table tr tbody th{
+   
+}
+#content table tr tbody td {
+   
+}
+
+/* =Forms */
+
+form div {
+    margin-bottom: 5px;
+}
+form div input, form div textarea {
+    margin-left: 110px;
+}
+form div input.txt, form div textarea {
+    border: 1px solid #CCC;
+    border-top: 1px solid #999;
+    width: 300px;
+    padding: 3px;
+}
+form div textarea {
+    height: 100px;
+}
+form div input.btn {
+    margin-left: 10px;
+}
+form div label {
+    position: absolute;
+}
+form div p {
+    font-size: 85%;
+    margin-left: 110px;
+    margin-top: 5px;
+    color: #777;
+}
+#addproject {
+    margin-bottom: 20px;
+}
+#addproject label {
+    left: -9999em;
+}
+#addproject input {
+    margin-left: 0;
+}
+#changeissue, #deleteissue {
+    margin-top: 20px;
+}
+#changeissue .btn, #deleteissue .btn {
+    margin-right: 10px;
+}
+#deleteissue p {
+    display: inline;
+    color: #777;
+    font-size: 90%;
+}
+
+/* =Foot */
+
+#foot {
+    font-size: 90%;
+    color: #999;
+}
+#foot a {
+    color: #999;
+    text-decoration: none;
+}
+/* =API */
+
+#api {
+    margin-top: 40px;
+}
+#api p {
+    margin-bottom: 5px;
+}
+#api .key {
+    border: 1px solid #CCC;
+    background: #ECECEC;
+    padding: 10px;
+    margin-top: 10px;
+}
+#api .key {
+}

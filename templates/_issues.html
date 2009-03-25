@@ -1,0 +1,33 @@
+{% if issues.count %}
+<table>
+    <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Identifier</th>
+            <th scope="col">Description</th>
+            <th scope="col">Date</th>
+            <th scope="col">Fixed</th>
+        </tr>
+    </thead>
+    <tbody>
+{% for issue in issues %}
+    <tr class="{% if not forloop.counter|divisibleby:2 %}alt {% endif %}{% if issue.fixed %}fixed{% endif %}">
+        <th scope="row">
+            <a href="/projects{{issue.internal_url}}">{{issue.name}}</a>
+        </th>
+        <td>#gitbug{{issue.identifier}}
+        </td>
+        <td>
+            {{issue.html}}
+        </td>
+        <td>
+            {{issue.created_date|date:"jS F Y"}}
+        </td>
+        <td>
+            {% if issue.fixed %}{{issue.fixed_date|date:"jS F Y"}}{% if issue.fixed_description %} - {{issue.fixed_description}}{% endif %}{% else %}Not fixed{% endif %}
+        </td>
+    </tr>    
+{% endfor %}
+    </tbody>
+    </table>
+{% endif %}

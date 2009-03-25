@@ -1,0 +1,2 @@
+DEBUG = False
+DEFAULT_CHARSET = 'utf-8'
