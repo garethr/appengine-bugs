@@ -5,13 +5,22 @@
 {% block header %}
 <div id="header">
     <h1>{{issue.name}} <span>from</span> <a href="/projects/{{issue.project.slug}}/">{{issue.project.name}}</a></h1>
-    <p>{{issue.created_date|date:"jS F Y"}}</p>
+    <p>Created on {{issue.created_date|date:"jS F Y"}}</p>
+    {% if issue.fixed %}
+        <p>Fixed on {{issue.fixed_date|date:"jS F Y"}}</p>
+    {% endif %}
+    
 </div>
 {% endblock %}
 
 {% block script %}
 <script type="text/javascript" charset="utf-8">
     $(function(){
+        $('#changeissue').hide();
+        var more_link = $('<span class="fakelink">Edit issue</span>').click(function() {
+            $(this).hide();
+            $('#changeissue').fadeIn();
+        }).prependTo('#content');
         $('#fixed_description').parent().hide();
         $('#fixed').click(function() {
             var n = $("#fixed:checked").length;
@@ -28,11 +37,11 @@
 
 {% block content %}
 <div id="content">
-{% if issue.fixed %}
-    <p>issue fixed on {{issue.fixed_date|date:"jS F Y"}}</p>
-{% endif %}
 
-{{issue.html}}
+<div id="extra">
+    <h2>Other project issues</h2>
+    {% include "_issues_list.html" %}
+</div>
 
 {% if owner %}
 
@@ -44,29 +53,33 @@
     <div>
         <label for="description">Description</label>
         <textarea id="description" name="description">{{issue.description}}</textarea>
+        <p>Supports Textile formatting</p>
     </div>
     <div>
         <label for="email">Email</label>
         <input type="text" name="email" id="email" value="{% if issue.email %}{{issue.email}}{% endif %}" class="txt"/>
+        <p>If you would like to be alerted when this bug is fixed.</p>
     </div>
     <div>
         <label for="fixed">Fixed</label>
         <input type="checkbox" id="fixed" name="fixed" {% if issue.fixed %}checked="checked"{% endif %}/>
     </div>
     <div>
-        <label for="fixed_description">Fixed Description</label>
+        <label for="fixed_description">Describe fix</label>
         <textarea id="fixed_description" name="fixed_description">{% if issue.fixed_description %}{{issue.fixed_description}}{% endif %}</textarea>
+        <p>Give some details about what the fix was, or why the issue was closed</p>
     </div>
     
     <input type="submit" value="Submit" class="btn"/>
     <a href="delete/">Delete</a>
+    <a href=".">Cancel</a>
 </form>
-
-
 
 {% endif %}
 
-{% include "_issues_list.html" %}
+<div id="txt">
+{{issue.html}}
+</div>
 
 </div>
 {% endblock %}

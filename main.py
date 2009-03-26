@@ -42,7 +42,7 @@ class ProjectHandler(BaseRequest):
         issues = Issue.all().filter('project =', project).order('fixed').order('created_date')
         
         user = users.get_current_user()
-        if project.user == user:
+        if project.user == user or users.is_current_user_admin():
             owner = True
         else:
             owner = False            
@@ -61,6 +61,7 @@ class ProjectHandler(BaseRequest):
         name = self.request.get("name")
         description = self.request.get("description")
         email = self.request.get("email")
+        
         issue = Issue(
             name=name,
             description=description,
@@ -72,6 +73,40 @@ class ProjectHandler(BaseRequest):
         
         self.redirect("/projects/%s/" % slug)
 
+class ProjectDeleteHandler(BaseRequest):
+    def get(self, slug):
+        if self.request.path[-1] != "/":
+            self.redirect("%s/" % self.request.path, True)
+            return
+
+        project = Project.all().filter('slug =', slug).fetch(1)[0]
+
+        user = users.get_current_user()            
+        if project.user == user or users.is_current_user_admin():
+            owner = True
+        else:
+            owner = False
+
+        context = {
+            'project': project,
+            'owner': owner,
+        }
+        # calculate the template path
+        output = self.render("project_delete.html", context)
+        self.response.out.write(output)
+
+    def post(self, slug):
+
+        project = Project.all().filter('slug =', slug).fetch(1)[0]
+
+        return_url = "/"
+
+        user = users.get_current_user()            
+        if project.user == user:
+            project.delete()
+
+        self.redirect(return_url)
+
 class IssueHandler(BaseRequest):
     def get(self, project_slug, issue_slug):
         if self.request.path[-1] != "/":
@@ -82,7 +117,7 @@ class IssueHandler(BaseRequest):
         issues = Issue.all().filter('project =', issue.project).filter('name !=', issue.name).filter('fixed =', False).order('-created_date').fetch(10)
 
         user = users.get_current_user()            
-        if issue.project.user == user:
+        if issue.project.user == user or users.is_current_user_admin():
             owner = True
         else:
             owner = False
@@ -134,7 +169,7 @@ class IssueDeleteHandler(BaseRequest):
         issue = Issue.all().filter('internal_url =', "/%s/%s/" % (project_slug, issue_slug)).fetch(1)[0]        
 
         user = users.get_current_user()            
-        if issue.project.user == user:
+        if issue.project.user == user or users.is_current_user_admin():
             owner = True
         else:
             owner = False
@@ -174,15 +209,16 @@ class ProjectsHandler(BaseRequest):
         self.response.out.write(output)
 
     def post(self):
-        try:
-            name = self.request.get("name")
-            project = Project(
-                name=name,
-                user=users.get_current_user(),       
-            )
-            project.put()
-        except db.BadValueError:
-            pass
+        name = self.request.get("name")
+        if Project.all().filter('name =', name).count() == 0:
+            try:
+                project = Project(
+                    name=name,
+                    user=users.get_current_user(),       
+                )
+                project.put()
+            except db.BadValueError:
+                pass
         self.redirect('/')
 
 class WebHookHandler(BaseRequest):
@@ -231,9 +267,11 @@ def main():
         ('/', Index),
         ('/projects/?$', ProjectsHandler),
         ('/projects/([A-Za-z0-9-]+)/hook/?$', WebHookHandler),
+        ('/projects/([A-Za-z0-9-]+)/delete/?$', ProjectDeleteHandler),
         ('/projects/([A-Za-z0-9-]+)/([A-Za-z0-9-]+)/?$', IssueHandler),
         ('/projects/([A-Za-z0-9-]+)/([A-Za-z0-9-]+)/delete/?$', IssueDeleteHandler),
         ('/projects/([A-Za-z0-9-]+)/?$', ProjectHandler),
+
         ('/faq/?$', FaqPageHandler),
         ('/.*', NotFoundPageHandler),
     ]

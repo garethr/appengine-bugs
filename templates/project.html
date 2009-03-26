@@ -5,7 +5,7 @@
 {% block header %}
 <div id="header">
     <h1>{{project.name}}</h1>
-    <p>{{project.created_date|date:"jS F Y"}}</p>
+    <p>Created on {{project.created_date|date:"jS F Y"}}</p>
 </div>
 {% endblock %}
 
@@ -13,7 +13,7 @@
 <script type="text/javascript" charset="utf-8">
     $(function(){
         $('#addissue').hide();
-        var more_link = $('<span class="fakelink">Add Issue</span>').click(function() {
+        var more_link = $('<span class="fakelink">Add issue</span>').click(function() {
             $(this).hide();
             $('#addissue').fadeIn();
         }).prependTo('#content');
@@ -38,6 +38,7 @@
     <div>
         <label for="description">Description</label>
         <textarea id="description" name="description"></textarea>
+        <p>Supports Textile formatting</p>
     </div>
     {% if user %}
     <div>
@@ -46,20 +47,27 @@
         <p>If you would like to be alerted when this bug is fixed.</p>
     </div>
     {% endif %}
-    <input type="submit" value="Add issue"/>
+    <input type="submit" value="Add issue" class="btn"/>
+    <a href=".">Cancel</a>
 </form>
 
 {% include "_issues.html" %}
 
 {% if owner %}
 
+<div>
+    <a href="delete/">Delete project</a>
+</div>
+
 <div id="api">
-    <p>You can close bugs via a <a href="http://github.com">GitHub</a> style web hook. You'll need the following <em>details</em> and to include the issue identifier (eg. #gitbug1234) in the commit message.</p>
+    <p>You can close bugs via a <a href="http://github.com">GitHub</a> style web hook. You'll need the following <em>details</em> and to include the issue identifier (eg. #gitbug1234) in the commit message. For instance:</p>
+    <blockquote><p>Changed settings file which fixes bug #gitbug52</p></blockquote>
     <div class="key">
         <p><code>{{project.key}}</code></p>
         <a href="http://gitbug.appspot.com/projects/{{project.slug}}/hook?key={{project.key}}">http://gitbug.appspot.com/projects/{{project.slug}}/hook?key={{project.key}}</a>
     </div>
 </div>
+
 
 {% endif %}
 

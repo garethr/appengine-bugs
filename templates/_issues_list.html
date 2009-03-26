@@ -3,7 +3,7 @@
 {% for issue in issues %}
     <li>
         <a href="/projects{{issue.internal_url}}">{{issue.name}}</a>
-        {{issue.created_date|date:"jS F Y"}}
+        <span>created on {{issue.created_date|date:"jS F Y"}}</span>
     </li>    
 {% endfor %}
 </ol>

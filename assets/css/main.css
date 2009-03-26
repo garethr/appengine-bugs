@@ -30,15 +30,15 @@ a:hover, .fakelink:hover {
     top: 5px;
     right: 10px;
 }
-#navigation {
-    
-}
 #header {
     margin-bottom: 25px;
 }
 #foot {
-
     margin: 10px;       
+}
+#extra {
+    float: right;
+    width: 200px;
 }
 
 /* =Navigation */
@@ -90,6 +90,7 @@ a:hover, .fakelink:hover {
 #header p {
     color: #777;
     font-size: 90%;
+    margin-bottom: 5px;
 }
 #content table thead th {
     font-weight: bold;
@@ -108,6 +109,9 @@ a:hover, .fakelink:hover {
 }
 #content table tr.alt th, #content table tr.alt td {
     background: #ECECEC;
+}
+#content table tr.fixed, #content table tr.fixed a {
+    color: #777;
 }   
 #content table tr td, #content table tr th {
     padding: 5px;
@@ -117,27 +121,41 @@ a:hover, .fakelink:hover {
 }
 #content table tr th {
     border-top: 1px solid #CCC;
+}
+#txt {
+    margin: 20px 0 10px;
+}
+#txt p {
+    margin-bottom: 1em;
+}
+#extra h2 {
+    margin-bottom: 10px;
+    color: #A7BDC8;
+    font-size: 120%;
+}
+#extra ol {
+    border-top: 1px solid #CCC;
+    padding-top: 10px;
+}
+#extra ol li {
+    margin-bottom: 5px;
+}
+#extra ol li a {
+}
+#extra ol li span {
+    color: #777;
+    font-size: 85%;
+}
+.clearfix:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
 
- 
-}
-#content table tr thead {
-   
-}
-#content table tr thead th {
-   
-}
-#content table tr thead td {
-   
-}
-#content table tr tbody {
-   
-}
-#content table tr tbody th{
-   
-}
-#content table tr tbody td {
-   
-}
+
+
 
 /* =Forms */
 
@@ -164,8 +182,7 @@ form div label {
 }
 form div p {
     font-size: 85%;
-    margin-left: 110px;
-    margin-top: 5px;
+    margin: 3px 0 10px 110px;
     color: #777;
 }
 #addproject {
@@ -180,10 +197,10 @@ form div p {
 #changeissue, #deleteissue {
     margin-top: 20px;
 }
-#changeissue .btn, #deleteissue .btn {
+#addissue .btn, #changeissue .btn, #deleteissue .btn, #changeissue a, #deleteproject .btn {
     margin-right: 10px;
 }
-#deleteissue p {
+#deleteissue p, #deleteproject p {
     display: inline;
     color: #777;
     font-size: 90%;
@@ -206,6 +223,12 @@ form div p {
 }
 #api p {
     margin-bottom: 5px;
+}
+#api blockquote {
+    border-left: 2px solid #BBB;
+    margin: 5px 0 5px 20px;
+    padding-left: 10px;
+    font-style: italic;
 }
 #api .key {
     border: 1px solid #CCC;
