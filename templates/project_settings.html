@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Change {{project.name}} on GitBug{% endblock %}
+
+{% block header %}
+<div id="header">
+    <h1>{{project.name}}</h1>
+    <p>Created on {{project.created_date|date:"jS F Y"}}</p>
+</div>
+{% endblock %}
+
+{% block content %}
+
+{% if owner %}
+
+<form action="" method="post" id="changeproject">
+    <div>
+        <label for="url">URL</label>
+        <input type="text" name="url" id="url" class="txt" value="{% if project.url %}{{project.url}}{% endif %}"/>
+    </div>
+    <div>
+        <label for="other_users">Other users</label>
+        <textarea id="other_users" name="other_users">{% for user in project.other_users %}{% if user %}{{user}} {% endif %}{% endfor %}</textarea>
+        <p>Google email addresses separated by spaces</p>
+    </div>
+    <input type="submit" value="Change" class="btn"/>    
+</form>
+
+
+{% endif %}
+
+{% endblock %}

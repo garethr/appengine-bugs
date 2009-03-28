@@ -65,8 +65,8 @@ class BaseRequest(webapp.RequestHandler):
         if output is None:        
             output = self.render("403.html")
             memcache.add("error403", output, 3600)
-        self.response.out.write(output)        
-    
+        self.response.out.write(output)   
+            
 def get_cache(key):
     if settings.CACHE:
         return memcache.get(key)

@@ -13,6 +13,7 @@ class Project(db.Model):
     slug = db.StringProperty()
     created_date = db.DateTimeProperty(auto_now_add=True)
     user = db.UserProperty(required=True)
+    other_users = db.StringListProperty()
 
     @property
     def open_issues(self):

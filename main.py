@@ -237,6 +237,65 @@ class ProjectDeleteHandler(BaseRequest):
                 logging.error("error deleting project: %s" % e)
 
         self.redirect("/")
+        
+class ProjectSettingsHandler(BaseRequest):
+    def get(self, slug):
+        if self.request.path[-1] != "/":
+            self.redirect("%s/" % self.request.path, True)
+            return
+
+        project = Project.all().filter('slug =', slug).fetch(1)[0]
+
+        user = users.get_current_user()
+
+        if project.user == user or users.is_current_user_admin():
+            owner = True
+        else:
+            self.render_403()
+            return
+
+        context = {
+            'project': project,
+            'owner': owner,
+        }
+        # calculate the template path
+        output = self.render("project_settings.html", context)
+        self.response.out.write(output)
+
+    def post(self, slug):
+
+        # if we don't have a user then throw
+        # an unauthorised error
+        user = users.get_current_user()
+        if not user:
+            self.render_403()
+            return
+
+        user = users.get_current_user()            
+
+        project = Project.all().filter('slug =', slug).fetch(1)[0]
+
+        logging.info("Here")
+
+        if project.user == user:
+            try:
+                other_users = self.request.get("other_users")
+                if other_users:
+                    list_of_users = other_users.split(" ")
+                    project.other_users = list_of_users
+                else:
+                    project.other_users = []
+                    
+                if self.request.get("url"):
+                    project.url = self.request.get("url")                
+                else:
+                    project.url = None
+                project.put()
+                logging.info("project modified: %s" % project.name)
+            except db.BadValueError, e:
+                logging.error("error modifiying project: %s" % e)
+
+        self.redirect('/projects/%s/settings/' % project.slug)
 
 class IssueHandler(BaseRequest):
     def get(self, project_slug, issue_slug):
@@ -249,11 +308,11 @@ class IssueHandler(BaseRequest):
         output = None
         if not user:
             output = get_cache("/%s/%s/" % (project_slug, issue_slug))
-            
+                    
         if output is None:
             issue = Issue.all().filter('internal_url =', "/%s/%s/" % (project_slug, issue_slug)).fetch(1)[0]
             issues = Issue.all().filter('project =', issue.project).filter('name !=', issue.name).filter('fixed =', False).order('-created_date').fetch(10)
-            if issue.project.user == user or users.is_current_user_admin():
+            if issue.project.user == user or users.is_current_user_admin() or user.email() in issue.project.other_users:
                 owner = True
             else:
                 owner = False
@@ -564,6 +623,7 @@ def main():
         ('/projects/?$', ProjectsHandler),
         ('/projects/([A-Za-z0-9-]+)/hook/?$', WebHookHandler),
         ('/projects/([A-Za-z0-9-]+)/delete/?$', ProjectDeleteHandler),
+        ('/projects/([A-Za-z0-9-]+)/settings/?$', ProjectSettingsHandler),
         ('/projects/([A-Za-z0-9-]+)/([A-Za-z0-9-]+).json$', IssueJsonHandler),
         ('/projects/([A-Za-z0-9-]+)/([A-Za-z0-9-]+)/?$', IssueHandler),
         ('/projects/([A-Za-z0-9-]+)/([A-Za-z0-9-]+)/delete/?$', IssueDeleteHandler),
