@@ -25,6 +25,12 @@
 </script>
 {% endblock %}
 
+{% block feed %}
+<link rel="alternate" type="application/rss+xml" title="Issues for {{project.name}} on GitBug" href="/projects/{{project.slug}}.rss" />
+<link rel="alternate" type="application/rss+xml" title="Open issues for {{project.name}} on GitBug" href="/projects/{{project.slug}}.rss?open=1" />
+<link rel="alternate" type="application/rss+xml" title="Closed issues for {{project.name}} on GitBug" href="/projects/{{project.slug}}.rss?closed=1" />
+{% endblock %}
+
 {% block projects_nav %} class="this"{% endblock %}
 
 {% block content %}
@@ -61,7 +67,7 @@
 
 <div id="api">
     <p>You can close bugs via a <a href="http://github.com">GitHub</a> style web hook. You'll need the following <em>details</em> and to include the issue identifier (eg. #gitbug1234) in the commit message. For instance:</p>
-    <blockquote><p>Changed settings file which fixes bug #gitbug52</p></blockquote>
+    <blockquote><p>changed settings file which fixes bug #gitbug52</p></blockquote>
     <div class="key">
         <p><code>{{project.key}}</code></p>
         <a href="http://gitbug.appspot.com/projects/{{project.slug}}/hook?key={{project.key}}">http://gitbug.appspot.com/projects/{{project.slug}}/hook?key={{project.key}}</a>

@@ -12,11 +12,15 @@
     
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.1/jquery.min.js" type="text/javascript" charset="utf-8"></script>
     
+    <link rel="alternate" type="application/rss+xml" title="Latest Projects on GitBug" href="/projects.rss" />
+    {% block feed %}
+    {% endblock %}
+    
     {% block script %}{% endblock %}
 
 </head>
 
-<body>
+<body{% block bodyclass %}{% endblock %}>
     
 <div id="head">
     
@@ -52,6 +56,17 @@
     <p>GitBug was created by Gareth Rushgrove <a href="http://morethanseven.net">morethanseven.net</a></p>
 </div>
 
+{% if not debug %}
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-435455-10");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+{% endif %}
 
 </body>
 

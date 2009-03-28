@@ -14,10 +14,17 @@ class Project(db.Model):
     created_date = db.DateTimeProperty(auto_now_add=True)
     user = db.UserProperty(required=True)
 
+    @property
+    def open_issues(self):
+        return self.issue_set.filter('fixed =', False)
+
+    @property
+    def closed_issues(self):
+        return self.issue_set.filter('fixed =', True)
+
     def put(self):
         # we set the slug on the first save
         # after which it is never changed
-        # TODO: make sure slug is not already in use
         if not self.slug:
             self.slug = slugify(unicode(self.name))
         super(Project, self).put()
@@ -70,9 +77,9 @@ class Issue(search.SearchableModel):
             self.fixed_date = None
         
         if self.fixed and self.email:
-            mail.send_mail(sender="gitbug@gmail.com",
+            mail.send_mail(sender="gareth.rushgrove@gmail.com",
                 to=self.email,
-                subject="You Bug has been fixed",
+                subject="[GitBug] Your bug has been fixed",
                 body="""You requested to be emailed when a bug on GitBug was fixed:
               
 Issue name: %s

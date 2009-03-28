@@ -1,11 +1,14 @@
 import os
 import re
+import logging
 import unicodedata
 
+from google.appengine.api import memcache
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 from google.appengine.api import users
 
+import settings
 from ext.textile import textile as real_textile
 
 def slugify(value):
@@ -40,6 +43,7 @@ class BaseRequest(webapp.RequestHandler):
         extras = {
             'user': user,
             'link': link,
+            'debug': settings.DEBUG,
         }
         # update the context passed to render
         context.update(extras)
@@ -53,3 +57,18 @@ class BaseRequest(webapp.RequestHandler):
         # adding in the extra context variables at the same time
         output = template.render(path, self._extra_context(context))
         return output
+        
+    def render_403(self):
+        self.error(403)
+        logging.info("unauthorised attempt to access: %s" % self.request.path)
+        output = get_cache("error403")
+        if output is None:        
+            output = self.render("403.html")
+            memcache.add("error403", output, 3600)
+        self.response.out.write(output)        
+    
+def get_cache(key):
+    if settings.CACHE:
+        return memcache.get(key)
+    else:
+        return None

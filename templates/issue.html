@@ -14,6 +14,7 @@
 {% endblock %}
 
 {% block script %}
+{% if owner %}
 <script type="text/javascript" charset="utf-8">
     $(function(){
         $('#changeissue').hide();
@@ -32,16 +33,19 @@
         });
     });
 </script>
+{% endif %}
 {% endblock %}
 
 
 {% block content %}
 <div id="content">
 
+{% if issues %}
 <div id="extra">
     <h2>Other project issues</h2>
     {% include "_issues_list.html" %}
 </div>
+{% endif %}
 
 {% if owner %}
 

@@ -5,11 +5,19 @@ a, .fakelink {
     text-decoration: none;
     color: #369CD6;
 }
-a:hover, .fakelink:hover {
-    color: #7297A9;
+a:hover {
+    color: #3FB7FA
 }
 .fakelink {
     cursor: pointer;
+    -webkit-border-radius: 10px;
+    color: #777;
+    padding: 5px 15px;
+    background-color: #369CD6;
+    color: #FFF;
+}
+.fakelink:hover {
+    background-color: #3FB7FA;
 }
 
 /* =Layout */
@@ -153,9 +161,22 @@ a:hover, .fakelink:hover {
     clear: both;
     visibility: hidden;
 }
-
-
-
+.intro {
+    margin: 20px 0;
+}
+.copy h2 {
+    margin-bottom: 10px;
+    color: #369CD6;
+    font-size: 120%;
+    font-weight: bold;
+}
+.copy pre {
+    line-height: 1.6;
+    margin-left: 20px;
+}
+.copy p, .copy pre {
+    margin-bottom: 1em;
+}
 
 /* =Forms */
 
@@ -220,13 +241,14 @@ form div p {
 
 #api {
     margin-top: 40px;
+    margin-bottom: 20px;
 }
 #api p {
     margin-bottom: 5px;
 }
 #api blockquote {
     border-left: 2px solid #BBB;
-    margin: 5px 0 5px 20px;
+    margin: 8px 0 8px 20px;
     padding-left: 10px;
     font-style: italic;
 }
@@ -237,4 +259,44 @@ form div p {
     margin-top: 10px;
 }
 #api .key {
+}
+
+/* =Home */
+
+#header h1 span {
+    color: #AAA;
+}
+.home #main .inner, .home #header  {
+    width: 750px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.home .col {
+    width: 355px;
+    float: left;
+    margin-bottom: 20px;
+}
+.home .col h2 {
+    margin-bottom: 10px;
+    color: #A7BDC8;
+    font-size: 150%; 
+}
+.home p.btn {
+    margin-top: 30px;   
+}
+.home p.btn a {
+    -webkit-border-radius: 10px;
+    color: #777;
+    padding: 5px 15px;
+    background-color: #369CD6;
+    color: #FFF;
+}
+.home p.btn a:hover {
+    background-color: #3FB7FA;
+}
+.home #primary {
+    padding-right: 10px;
+}
+.home #secondary {
+    padding-left: 10px;
 }

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}GitBug - A Very Simple Issue Tracker{% endblock %}
+
+{% block header %}
+<div id="header">
+    <h1>GitBug <span>Alpha</span></h1>
+</div>
+{% endblock %}
+
+{% block bodyclass %} class="home"{% endblock %}
+
+{% block home_nav %} class="this"{% endblock %}
+
+{% block content %}
+<div id="content">
+    <div class="inner">
+        <div id="primary" class="col">
+        <h2>Simple Issue Tracking. No Fuss</h2>
+        <p>The plan is for an issue tracker that is as simple as possible. Ideally suited for individuals or small teams with a love of minimalism.</p>
+        </div>
+        <div id="secondary" class="col">
+        <h2>Start Straight Away. Free</h2>
+        <p>All you need is a standard Google account and you can get started creating a project. You don't even need an account if all you want to do is file issues against an existing project.</p>
+        <p class="btn"><a href="{{link}}">Login or Sign up</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}
