@@ -275,8 +275,6 @@ class ProjectSettingsHandler(BaseRequest):
 
         project = Project.all().filter('slug =', slug).fetch(1)[0]
 
-        logging.info("Here")
-
         if project.user == user:
             try:
                 other_users = self.request.get("other_users")
