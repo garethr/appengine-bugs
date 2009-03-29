@@ -14,6 +14,10 @@ handlers:
 - url: /favicon.ico
   static_files: assets/images/favicon.ico
   upload: assets/images/favicon.ico
+
+- url: /admin/.*
+  script: admin.py 
+  login: admin
   
 - url: /.*
   script: main.py

@@ -606,10 +606,6 @@ class FaqPageHandler(BaseRequest):
             if not user:
                 memcache.add("faq", output, 3600)
         self.response.out.write(output)
-
-# Log a message each time this module get loaded.
-logging.info('loading %s, app version = %s',
-    __name__, os.getenv('CURRENT_VERSION_ID'))
                         
 def main():
     "Run the application"
