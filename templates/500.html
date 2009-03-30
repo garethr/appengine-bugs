@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Something went wrong{% endblock %}
+
+{% block header %}
+<div id="header">
+    <h1>Something went wrong</h1>
+</div>
+{% endblock %}
+
+{% block content %}
+
+{% if traceback %}
+<pre>{{traceback}}</pre>
+{% else %}
+    <p>I'm afraid something has gone wrong. Various alarms are going off as you read this and we can only say we'll get right onto fixing the issue. In the meantime do drop us an <a href="mailto:gareth@morethanseven.net">email about the problem</a>.</p>
+{% endif %}
+
+{% endblock %}
+

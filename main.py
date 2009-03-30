@@ -59,8 +59,12 @@ class ProjectHandler(BaseRequest):
         
         # if we don't have a cached version or are logged in
         if output is None:
-            project = Project.all().filter('slug =', slug).fetch(1)[0]        
-            issues = Issue.all().filter('project =', project).order('fixed').order('created_date')
+            try:
+                project = Project.all().filter('slug =', slug).fetch(1)[0]        
+                issues = Issue.all().filter('project =', project).order('fixed').order('created_date')
+            except IndexError:
+                self.render_404()
+                return 
             
             # check to see if we have admin rights over this project
             if project.user == user or users.is_current_user_admin():
@@ -279,7 +283,11 @@ class ProjectSettingsHandler(BaseRequest):
             self.redirect("%s/" % self.request.path, True)
             return
 
-        project = Project.all().filter('slug =', slug).fetch(1)[0]
+        try:
+            project = Project.all().filter('slug =', slug).fetch(1)[0]
+        except IndexError:
+            self.render_404()
+            return
 
         user = users.get_current_user()
 
@@ -344,8 +352,13 @@ class IssueHandler(BaseRequest):
             output = get_cache("/%s/%s/" % (project_slug, issue_slug))
                     
         if output is None:
-            issue = Issue.all().filter('internal_url =', "/%s/%s/" % (project_slug, issue_slug)).fetch(1)[0]
-            issues = Issue.all().filter('project =', issue.project).filter('name !=', issue.name).filter('fixed =', False).order('-created_date').fetch(10)
+            try:
+                issue = Issue.all().filter('internal_url =', "/%s/%s/" % (project_slug, issue_slug)).fetch(1)[0]
+                issues = Issue.all().filter('project =', issue.project).filter('name !=', issue.name).filter('fixed =', False).order('-created_date').fetch(10)
+            except IndexError:
+                self.render_404()
+                return
+
             if issue.project.user == user or users.is_current_user_admin() or user.email() in issue.project.other_users:
                 owner = True
             else:

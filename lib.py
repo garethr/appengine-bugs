@@ -2,6 +2,8 @@ import os
 import re
 import logging
 import unicodedata
+import sys
+import traceback
 
 from google.appengine.api import memcache
 from google.appengine.ext import webapp
@@ -66,7 +68,31 @@ class BaseRequest(webapp.RequestHandler):
         if output is None:        
             output = self.render("403.html")
             memcache.add("error403", output, 3600)
-        self.response.out.write(output)   
+        self.response.out.write(output)
+
+    def render_404(self):
+        "Not found helper"
+        self.error(404)
+        user = users.get_current_user()
+        output = None
+        if not user:
+            output = get_cache("error404")
+        if output is None:        
+            output = self.render("404.html")
+            if not user:
+                memcache.add("error404", output, 3600)
+        self.response.out.write(output)
+                
+    def handle_exception(self, exception, debug_mode): 
+        "Nicer 500 error handling, including debugging info if admin"
+        lines = ''.join(traceback.format_exception(*sys.exc_info())) 
+        logging.error(lines)
+        context = {}
+        if users.is_current_user_admin(): 
+            context['traceback'] = lines 
+        self.error(500)
+        output = self.render('500.html', context)
+        self.response.out.write(output)
             
 def get_cache(key):
     "Cache helper which checks if we have the cache enabled first"
