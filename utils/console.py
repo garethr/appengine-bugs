@@ -1,10 +1,17 @@
 #!/usr/bin/python
+import os
 import code
 import getpass
 import sys
 
+# insert application path
+app_path = os.path.join(
+    os.path.realpath(os.path.dirname(__file__)), '../'
+)
+sys.path.insert(0, app_path)
+
 # assuming appengine isn't already on your path you'll need to add it
-sys.path.append("/Applications/GoogleAppEngineLauncher.app/Contents/Resources/GoogleAppEngine-default.bundle/Contents/Resources/google_appengine")
+#sys.path.append("/Applications/GoogleAppEngineLauncher.app/Contents/Resources/GoogleAppEngine-default.bundle/Contents/Resources/google_appengine")
 
 from google.appengine.ext.remote_api import remote_api_stub
 from google.appengine.ext import db

@@ -17,14 +17,14 @@ indexes:
   - name: project
   - name: created_date
 
-# Used 232 times in query history.
+# Used 234 times in query history.
 - kind: Issue
   properties:
   - name: fixed
   - name: project
   - name: name
 
-# Used 412 times in query history.
+# Used 420 times in query history.
 - kind: Issue
   properties:
   - name: project
@@ -53,7 +53,7 @@ indexes:
   - name: project
   - name: name
 
-# Used 136 times in query history.
+# Used 147 times in query history.
 - kind: Project
   properties:
   - name: user

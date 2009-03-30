@@ -87,6 +87,16 @@ class ProjectHandler(BaseRequest):
                 if email:
                     issue.email = email
                 issue.put()
+                mail.send_mail(sender="gareth.rushgrove@gmail.com",
+                    to=project.user.email(),
+                    subject="[GitBug] New bug added to %s" % project.name,
+                    body="""You requested to be emailed when a bug on GitBug was added:
+
+Issue name: %s
+Description: %s
+
+Thanks for using GitBug <http://gitbug.appspot.com>. A very simple issue tracker.
+    """ % (issue.name, issue.description))
                 logging.info("issue created: %s in %s" % (name, project.name))
         except Exception, e:
             logging.error("error adding project: %s" % e)
