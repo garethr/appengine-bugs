@@ -59,6 +59,7 @@ class BaseRequest(webapp.RequestHandler):
         return output
         
     def render_403(self):
+        "Custom authentication required view"
         self.error(403)
         logging.info("unauthorised attempt to access: %s" % self.request.path)
         output = get_cache("error403")
@@ -68,6 +69,7 @@ class BaseRequest(webapp.RequestHandler):
         self.response.out.write(output)   
             
 def get_cache(key):
+    "Cache helper which checks if we have the cache enabled first"
     if settings.CACHE:
         return memcache.get(key)
     else:

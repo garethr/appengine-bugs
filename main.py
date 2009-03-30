@@ -21,18 +21,21 @@ from ext.PyRSS2Gen import RSS2, RSSItem
 
 webapp.template.register_template_library('filters')
 
+# regex for the patter to look for in the webhooks
 GITBUG = re.compile('#gitbug[0-9]+')
 
 class Index(BaseRequest):
+    "Home page. Shows either introductory info or a list of the users projects"
     def get(self):
         if users.get_current_user():
+            # if we have a user then get their projects
             projects = Project.all().filter('user =', users.get_current_user()).order('-created_date').fetch(50)
             context = {
                 'projects': projects,
             }
-            # calculate the template path
             output = self.render("index.html", context)
         else:
+            # otherwise it's a static page so cache for a while
             output = get_cache("home")
             if output is None:
                 output = self.render("home.html")
@@ -40,21 +43,26 @@ class Index(BaseRequest):
         self.response.out.write(output)
 
 class ProjectHandler(BaseRequest):
+    "Individual project details and issue adding"
     def get(self, slug):
+        # we want canonocal urls so redirect to add a trailing slash if needed
         if self.request.path[-1] != "/":
             self.redirect("%s/" % self.request.path, True)
             return
         
         user = users.get_current_user()
-    
         output = None
+        
+        # if not logged in then use a cached version
         if not user:
             output = get_cache("project_%s" % slug)
         
+        # if we don't have a cached version or are logged in
         if output is None:
             project = Project.all().filter('slug =', slug).fetch(1)[0]        
             issues = Issue.all().filter('project =', project).order('fixed').order('created_date')
             
+            # check to see if we have admin rights over this project
             if project.user == user or users.is_current_user_admin():
                 owner = True
             else:
@@ -65,14 +73,17 @@ class ProjectHandler(BaseRequest):
                 'issues': issues,
                 'owner': owner,
             }
-        # calculate the template path
         output = self.render("project.html", context)
         if not user:
+            # only save a cached version if we're not logged in
+            # so as to avoid revelaving user details
             memcache.add("project_%s" % slug, output, 3600)
         self.response.out.write(output)
         
     def post(self, slug):
+        "Create an issue against this project"
         project = Project.all().filter('slug =', slug).fetch(1)[0]
+        # get details from the form
         name = self.request.get("name")
         description = self.request.get("description")
         email = self.request.get("email")
@@ -104,8 +115,8 @@ Thanks for using GitBug <http://gitbug.appspot.com>. A very simple issue tracker
         self.redirect("/projects/%s/" % slug)
 
 class ProjectJsonHandler(BaseRequest):
+    "Project information in JSON"
     def get(self, slug):
-
         output = get_cache("project_%s_json" % slug)
         if output is None:
             project = Project.all().filter('slug =', slug).fetch(1)[0]        
@@ -113,12 +124,13 @@ class ProjectJsonHandler(BaseRequest):
 
             issues_data = {}
             for issue in issues:
-
+                # friendlier display of information
                 if issue.fixed: 
                     status = "Fixed"
                 else:
                     status = "Open"
 
+                # set structure of inner json
                 data = {
                     'internal_url': "%s/projects%s" % (settings.SYSTEM_URL, issue.internal_url),
                     'created_date': str(project.created_date)[0:19],
@@ -130,6 +142,7 @@ class ProjectJsonHandler(BaseRequest):
                     data['fixed_description'] = issue.fixed_description
                 issues_data[issue.name] = data
 
+            # set structure of outer json
             json = {
                 'date': str(datetime.now())[0:19],
                 'name': project.name,
@@ -141,13 +154,16 @@ class ProjectJsonHandler(BaseRequest):
             if project.url:
                 json['external_url'] = project.url
 
+            # create the json
             output = simplejson.dumps(json)
-
+            # cache it
             memcache.add("project_%s_json" % slug, output, 3600)
+        # send the correct headers
         self.response.headers["Content-Type"] = "application/javascript; charset=utf8"
         self.response.out.write(output)
         
 class ProjectRssHandler(BaseRequest):
+    "Project as RSS, specifically lists issues"
     def get(self, slug):
 
         output = get_cache("project_%s_rss" % slug)
@@ -155,6 +171,7 @@ class ProjectRssHandler(BaseRequest):
 
             project = Project.all().filter('slug =', slug).fetch(1)[0]        
                
+            # allow query string arguments to specify filters
             if self.request.get("open"):
                 status_filter = True
                 fixed = False
@@ -164,11 +181,13 @@ class ProjectRssHandler(BaseRequest):
             else:
                 status_filter = None
 
+            # if we have a filter then filter the results set
             if status_filter:
                 issues = Issue.all().filter('project =', project).filter('fixed =', fixed).order('fixed').order('created_date')
             else:
                 issues = Issue.all().filter('project =', project).order('fixed').order('created_date')
             
+            # create the RSS feed
             rss = RSS2(
                 title="Issues for %s on GitBug" % project.name,
                 link="%s/%s/" % (settings.SYSTEM_URL, project.slug),
@@ -176,8 +195,8 @@ class ProjectRssHandler(BaseRequest):
                 lastBuildDate=datetime.now()
             )
 
+            # add an item for each issue
             for issue in issues:
-                
                 if issue.fixed: 
                     pubDate = issue.fixed_date
                     title = "%s (%s)" % (issue.name, "Fixed")
@@ -193,31 +212,33 @@ class ProjectRssHandler(BaseRequest):
                         pubDate=pubDate
                     ))
 
+            # get the xml
             output = rss.to_xml()
 
             memcache.add("project_%s_rss" % slug, output, 3600)
+        # send the correct headers
         self.response.headers["Content-Type"] = "application/rss+xml; charset=utf8"
         self.response.out.write(output)
 
 class ProjectDeleteHandler(BaseRequest):
+    "Delete projects, including a confirmation page"
     def get(self, slug):
+        "Display a confirmation page before deleting"
+        # check the url has a trailing slash and add it if not
         if self.request.path[-1] != "/":
             self.redirect("%s/" % self.request.path, True)
             return
-            
+                        
+        project = Project.all().filter('slug =', slug).fetch(1)[0]
+        
         # if we don't have a user then throw
         # an unauthorised error
         user = users.get_current_user()
-        if not user:
-            self.render_403()
-            return
-            
-        project = Project.all().filter('slug =', slug).fetch(1)[0]
-        
         if project.user == user or users.is_current_user_admin():
             owner = True
         else:
-            owner = False
+            self.render_403()
+            return
 
         context = {
             'project': project,
@@ -238,18 +259,22 @@ class ProjectDeleteHandler(BaseRequest):
 
         project = Project.all().filter('slug =', slug).fetch(1)[0]
 
-        user = users.get_current_user()            
-        if project.user == user:
+        user = users.get_current_user()
+        if project.user == user or users.is_current_user_admin():      
             try:
                 logging.info("project deleted: %s" % project.name)
+                # delete the project
                 project.delete()
             except Exception, e:
                 logging.error("error deleting project: %s" % e)
 
+        # just head back to the home page, which should list you projects
         self.redirect("/")
         
 class ProjectSettingsHandler(BaseRequest):
+    "Dispay and allowing editing a few per project settings"
     def get(self, slug):
+        # make sure we have a trailing slash
         if self.request.path[-1] != "/":
             self.redirect("%s/" % self.request.path, True)
             return
@@ -258,6 +283,7 @@ class ProjectSettingsHandler(BaseRequest):
 
         user = users.get_current_user()
 
+        # check we have the permissions to be looking at settings
         if project.user == user or users.is_current_user_admin():
             owner = True
         else:
@@ -375,7 +401,7 @@ class IssueHandler(BaseRequest):
                 logging.info("issue edited: %s in %s" % (issue.name, issue.project.name))
                 
             except Exception, e:
-                logging("error editing issue: %s" % e)
+                logging.info("error editing issue: %s" % e)
 
         self.redirect("/projects%s" % issue.internal_url)
 
