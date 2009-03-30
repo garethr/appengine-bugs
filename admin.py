@@ -11,15 +11,15 @@ import settings
 
 class Index(BaseRequest):
     def get(self):
-        output = get_cache("admin")
-        if output is None:
-            output = self.render("admin.html")
-            memcache.add("admin", output, 3600)
+        stats = memcache.get_stats()
+        context = {
+            'stats': stats,
+        }        
+        output = self.render("admin.html", context)
         self.response.out.write(output)
         
 class ClearCache(BaseRequest):
-    def get(self):
-        
+    def post(self):
         clear = memcache.flush_all()    
         if clear:
             logging.info("Cache cleared")
@@ -28,13 +28,6 @@ class ClearCache(BaseRequest):
 
         self.redirect("/admin/")
         
-class CacheStats(BaseRequest):
-    def get(self):
-        
-        stats = memcache.get_stats()
-        self.response.out.write(stats)
-        
-
 class NotFoundPageHandler(BaseRequest):
     def get(self):
         self.error(404)
@@ -50,7 +43,6 @@ def main():
     ROUTES = [
         ('/admin/?$', Index),
         ('/admin/clearcache/?$', ClearCache),
-        ('/admin/cachestats/?$', CacheStats),
         ('/.*', NotFoundPageHandler),
     ]
     application = webapp.WSGIApplication(ROUTES, debug=settings.DEBUG)

@@ -1,0 +1,27 @@
+.section h2 {
+    font-size: 150%;
+    color: #A7BDC8;
+    margin-bottom: 20px;
+}
+.section table {
+    border-top: 1px solid #CCC;
+    border-bottom: 1px solid #CCC;
+}
+#cache table {
+    width: 200px;
+}
+.section table tr td, .section table tr th {
+    padding: 5px;
+}
+.section table tr {
+    border-top: 1px solid #CCC;
+}
+.section table tr.alt td, .section table tr.alt th {
+    background: #ECECEC;
+}
+.section table th {
+    font-weight: bold;
+}
+#cache form {
+    margin-top: 20px;
+}

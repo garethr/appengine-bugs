@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}GitBug Admin{% endblock %}
+
+{% block styles %}<link rel="stylesheet" href="/assets/css/admin.css" type="text/css" media="screen" />{% endblock %}
+
+{% block content %}
+
+<div class="section" id="cache">
+
+    <h2>Cache</h2>
+
+    <table>
+    <tr>
+        <th>Hits</th>
+        <td>{{stats.hits}}</td>
+    </tr>
+    <tr class="alt">
+        <th>Misses</th>
+        <td>{{stats.misses}}</td>
+    </tr>
+    <tr>
+        <th>Items</th>
+        <td>{{stats.items}}</td>
+    </tr>
+    <tr class="alt">
+        <th>Bytes</th>
+        <td>{{stats.bytes}}</td>
+    </tr>
+    </table>
+
+    <form action="/admin/clearcache/" method="post">
+        <input type="submit" value="Clear Cache"/>
+    </form>
+    
+</div>
+
+{% endblock %}
