@@ -14,7 +14,7 @@ from google.appengine.api import mail
 
 from django.utils import simplejson
 
-from lib import BaseRequest, get_cache
+from lib import BaseRequest, get_cache, slugify
 import settings
 from models import Project, Issue
 from ext.PyRSS2Gen import RSS2, RSSItem
@@ -23,6 +23,16 @@ webapp.template.register_template_library('filters')
 
 # regex for the patter to look for in the webhooks
 GITBUG = re.compile('#gitbug[0-9]+')
+
+# validate url
+URL_RE = re.compile(
+    r'^https?://' # http:// or https://
+    r'(?:(?:[A-Z0-9-]+\.)+[A-Z]{2,6}|' #domain...
+    r'localhost|' #localhost...
+    r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})' # ...or ip
+    r'(?::\d+)?' # optional port
+    r'(?:/?|/\S+)$', re.IGNORECASE)
+
 
 class Index(BaseRequest):
     "Home page. Shows either introductory info or a list of the users projects"
@@ -77,7 +87,7 @@ class ProjectHandler(BaseRequest):
                 'issues': issues,
                 'owner': owner,
             }
-        output = self.render("project.html", context)
+            output = self.render("project.html", context)
         if not user:
             # only save a cached version if we're not logged in
             # so as to avoid revelaving user details
@@ -114,7 +124,7 @@ Thanks for using GitBug <http://gitbug.appspot.com>. A very simple issue tracker
     """ % (issue.name, issue.description))
                 logging.info("issue created: %s in %s" % (name, project.name))
         except Exception, e:
-            logging.error("error adding project: %s" % e)
+            logging.error("error adding issue: %s" % e)
         
         self.redirect("/projects/%s/" % slug)
 
@@ -329,9 +339,18 @@ class ProjectSettingsHandler(BaseRequest):
                     project.other_users = []
                     
                 if self.request.get("url"):
-                    project.url = self.request.get("url")                
+                    url = self.request.get("url")
+                    if not url[:7] == 'http://':
+                        url = "http://%s" % url
+                    if URL_RE.match(url):
+                        project.url = url
                 else:
                     project.url = None
+                    
+                if self.request.get("description"):
+                    project.description = self.request.get("description")                
+                else:
+                    project.description = None
                 project.put()
                 logging.info("project modified: %s" % project.name)
             except db.BadValueError, e:
@@ -354,12 +373,19 @@ class IssueHandler(BaseRequest):
         if output is None:
             try:
                 issue = Issue.all().filter('internal_url =', "/%s/%s/" % (project_slug, issue_slug)).fetch(1)[0]
-                issues = Issue.all().filter('project =', issue.project).filter('name !=', issue.name).filter('fixed =', False).order('-created_date').fetch(10)
+                issues = Issue.all().filter('project =', issue.project).filter('name !=', issue.name).filter('fixed =', False).order('name').order('-created_date').fetch(10)
             except IndexError:
                 self.render_404()
                 return
 
-            if issue.project.user == user or users.is_current_user_admin() or user.email() in issue.project.other_users:
+            on_list = False
+            try:
+                if user.email() in issue.project.other_users:
+                    on_list = True
+            except:
+                pass
+
+            if issue.project.user == user or users.is_current_user_admin() or on_list:
                 owner = True
             else:
                 owner = False
@@ -532,16 +558,23 @@ class ProjectsHandler(BaseRequest):
             return
         
         name = self.request.get("name")
-        if Project.all().filter('name =', name).count() == 0:
-            try:
-                project = Project(
-                    name=name,
-                    user=users.get_current_user(),       
-                )
-                project.put()
-                logging.info("project added: %s" % project.name)
-            except db.BadValueError, e:
-                logging.error("error adding project: %s" % e)
+        
+        # check we have a value
+        if name:
+            # then check we have a value which isn't just spaces
+            if name.strip():
+                if Project.all().filter('name =', name).count() == 0:
+                    # we also need to check if we have something with the same slug
+                    if Project.all().filter('slug =', slugify(unicode(name))).count() == 0:
+                        try:
+                            project = Project(
+                                name=name,
+                                user=users.get_current_user(),       
+                            )
+                            project.put()
+                            logging.info("project added: %s" % project.name)
+                        except db.BadValueError, e:
+                            logging.error("error adding project: %s" % e)
         self.redirect('/')
         
 class ProjectsJsonHandler(BaseRequest):
@@ -606,7 +639,7 @@ class WebHookHandler(BaseRequest):
         
         key = self.request.get("key")
         
-        if key == project.__key__: 
+        if key == project.key(): 
             try:
                 payload = self.request.get("payload")
                 representation = simplejson.loads(payload)
@@ -656,7 +689,7 @@ class FaqPageHandler(BaseRequest):
                 memcache.add("faq", output, 3600)
         self.response.out.write(output)
                         
-def main():
+def application():
     "Run the application"
     # wire up the views
     ROUTES = [
@@ -677,7 +710,12 @@ def main():
         ('/.*', NotFoundPageHandler),
     ]
     application = webapp.WSGIApplication(ROUTES, debug=settings.DEBUG)
-    run_wsgi_app(application)
+    return application
+
+def main():
+    "Run the application"
+    run_wsgi_app(application())
+
 
 if __name__ == '__main__':
     main()

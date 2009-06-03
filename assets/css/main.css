@@ -45,8 +45,7 @@ a:hover {
     margin: 10px;       
 }
 #extra {
-    float: right;
-    width: 200px;
+    margin-top: 40px;
 }
 
 /* =Navigation */
@@ -63,7 +62,7 @@ a:hover {
     color: #555;  
 }
 #greeting a, #navigation ul li a {   
-    color: #777769;
+    color: #999;
     text-decoration: none;
 }
 #navigation ul li.this { 
@@ -75,8 +74,13 @@ a:hover {
 
 /* =Detail */
 
+#content ul.projects .desc {
+    font-size: 85%;
+    color: #666;
+    margin-top: 5px;   
+}
 #content ul.projects li a {
-    font-size: 200%;
+    font-size: 110%;
 }
 #content ul.projects li span {
     font-size: 85%;
@@ -84,8 +88,19 @@ a:hover {
     display: block;
     margin-top: 2px;    
 }
+#content ul.projects li p span {
+    margin : 0;
+    display: inline;
+    font-size: 100%;
+}
 #content ul.projects li {
-    margin-bottom: 20px;
+    float: left;
+    width: 31%;
+    margin-right: 2%;
+    margin-bottom: 15px;
+}
+#content ul.projects li:hover {
+    border-color: #CCC;
 }
 #header h1 {
     font-size: 200%;
@@ -131,10 +146,22 @@ a:hover {
     border-top: 1px solid #CCC;
 }
 #txt {
-    margin: 20px 0 10px;
+    margin: 20px 20px 10px 0;
 }
 #txt p {
     margin-bottom: 1em;
+}
+#txt ul, #txt ol {
+    margin-bottom: 1em;
+}
+#txt li {
+    margin-left: 1.5em;      
+}
+#txt ul li {
+    list-style-type: disc;
+}
+#txt ol li {
+    list-style-type: decimal;
 }
 #extra h2 {
     margin-bottom: 10px;
@@ -215,7 +242,7 @@ form div p {
     color: #777;
 }
 #addproject {
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 #addproject label {
     left: -9999em;
@@ -308,4 +335,13 @@ form div p {
 }
 .home #secondary {
     padding-left: 10px;
+}
+.message {
+    padding: 10px;
+    border: 1px solid #CCC;
+    background: #ECECEC;
+    margin-bottom: 10px;
+}
+.message strong {
+    font-weight: bold;
 }

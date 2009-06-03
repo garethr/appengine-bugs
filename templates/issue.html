@@ -3,6 +3,11 @@
 {% block title %}{{issue.name}} in {{issue.project.name}} on GitBug{% endblock %}
 
 {% block header %}
+{% if not user %}
+    <div class="message">
+        <p><strong>Remember</strong>. You need to be <a href="{{link}}">logged in</a> to edit or close this issue.</p>
+    </div>
+{% endif %}
 <div id="header">
     <h1>{{issue.name}} <span>from</span> <a href="/projects/{{issue.project.slug}}/">{{issue.project.name}}</a></h1>
     <p>Created on {{issue.created_date|date:"jS F Y"}}</p>
@@ -18,7 +23,7 @@
 <script type="text/javascript" charset="utf-8">
     $(function(){
         $('#changeissue').hide();
-        var more_link = $('<span class="fakelink">Edit issue</span>').click(function() {
+        var more_link = $('<span class="fakelink">Edit or Close  issue</span>').click(function() {
             $(this).hide();
             $('#changeissue').fadeIn();
         }).prependTo('#content');
@@ -39,13 +44,6 @@
 
 {% block content %}
 <div id="content">
-
-{% if issues %}
-<div id="extra">
-    <h2>Other project issues</h2>
-    {% include "_issues_list.html" %}
-</div>
-{% endif %}
 
 {% if owner %}
 
@@ -84,6 +82,14 @@
 <div id="txt">
 {{issue.html}}
 </div>
+
+{% if issues %}
+<div id="extra">
+    <h2>Other project issues</h2>
+    {% include "_issues_list.html" %}
+</div>
+{% endif %}
+
 
 </div>
 {% endblock %}

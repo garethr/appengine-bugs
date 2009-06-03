@@ -17,6 +17,12 @@
     <div>
         <label for="url">URL</label>
         <input type="text" name="url" id="url" class="txt" value="{% if project.url %}{{project.url}}{% endif %}"/>
+        <p>Must be a valid URL</p>
+    </div>
+    <div>
+        <label for="description">Description</label>
+        <textarea id="description" name="description">{% if project.description %}{{project.description}}{% endif %}</textarea>
+        <p>First fifteen words are shown on the project list, the rest is shown on the project page</p>
     </div>
     <div>
         <label for="other_users">Other users</label>

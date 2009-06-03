@@ -15,9 +15,10 @@ from ext.textile import textile as real_textile
 
 def slugify(value):
     "Slugify a string, to make it URL friendly."
-
-    value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
+    value = unicodedata.normalize('NFKD', unicode(value)).encode('ascii', 'ignore')
     value = unicode(re.sub('[^\w\s-]', '', value).strip().lower())
+    # added remove underscores
+    value = value.replace('_', '')
     return re.sub('[-\s]+','-',value)
 
 def textile(value):

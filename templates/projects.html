@@ -5,8 +5,14 @@
 {% block projects_nav %} class="this"{% endblock %}
 
 {% block header %}
+{% if not user %}
+    <div class="message">
+        <p><strong>Remember</strong>. If you <a href="{{link}}">log in</a> you can see just your projects.</p>
+    </div>
+{% endif %}
 <div id="header">
-    <h1>Projects</h1>
+    <h1>Latest projects</h1>
+    <p>A selection of the latest projects added to GitBug</p>
 </div>
 {% endblock %}
 

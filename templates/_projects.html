@@ -1,7 +1,8 @@
 {% if projects %}
 <ul class="projects">
 {% for project in projects %}
-    <li><a href="/projects/{{project.slug}}/">{{project.name}}</a> <span>Created on {{project.created_date|date:"jS F Y"}} | Issues: {{project.open_issues.count}}</span></li>
+    <li><a href="/projects/{{project.slug}}/">{{project.name}}</a> <span>Created on {{project.created_date|date:"jS F Y"}} | Issues: {{project.open_issues.count}}</span>
+    </li>
 {% endfor %}
 </ul>
 {% endif %}

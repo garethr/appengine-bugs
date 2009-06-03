@@ -3,10 +3,18 @@
 {% block title %}{{project.name}} on GitBug{% endblock %}
 
 {% block header %}
-<div id="header">
-    <h1>{{project.name}}</h1>
-    <p>Created on {{project.created_date|date:"jS F Y"}}</p>
-</div>
+    {% if not user %}
+        <div class="message">
+            <p><strong>Remember</strong>. You need to be <a href="{{link}}">logged in</a> to change the project settings or for API access if you own this project.</p>
+        </div>
+    {% endif %}
+    <div id="header">
+        <h1>{{project.name}}</h1>
+
+        <p>Created on {{project.created_date|date:"jS F Y"}} </p>
+        {% if project.description %}<div class="desc">{{project.html}}</div>{% endif %}
+        {% if project.url %}<p><a href="{{project.url}}">{{project.url}}</a></p>{% endif %}
+    </div>
 {% endblock %}
 
 {% block script %}

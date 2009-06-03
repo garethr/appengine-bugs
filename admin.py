@@ -37,7 +37,7 @@ class NotFoundPageHandler(BaseRequest):
             memcache.add("error404", output, 3600)
         self.response.out.write(output)
 
-def main():
+def application():
     "Run the application"
     # wire up the views
     ROUTES = [
@@ -46,7 +46,12 @@ def main():
         ('/.*', NotFoundPageHandler),
     ]
     application = webapp.WSGIApplication(ROUTES, debug=settings.DEBUG)
-    run_wsgi_app(application)
+    return application
+
+def main():
+    "Run the application"
+    run_wsgi_app(application())
+
 
 if __name__ == '__main__':
     main()

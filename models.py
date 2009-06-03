@@ -11,6 +11,8 @@ class Project(db.Model):
     "Represents a single project"
     name = db.StringProperty(required=True)
     url = db.LinkProperty()
+    description = db.TextProperty()
+    html = db.TextProperty()
     slug = db.StringProperty()
     created_date = db.DateTimeProperty(auto_now_add=True)
     user = db.UserProperty(required=True)
@@ -29,6 +31,7 @@ class Project(db.Model):
     def put(self):
         # we set the slug on the first save
         # after which it is never changed
+        self.html = textile(unicode(self.description))
         if not self.slug:
             self.slug = slugify(unicode(self.name))
         super(Project, self).put()
@@ -44,7 +47,7 @@ class Counter(db.Model):
 class Issue(search.SearchableModel):
     "Issue or bug representation"
     name = db.StringProperty(required=True)
-    description = db.TextProperty(required=True)
+    description = db.TextProperty()
     html = db.TextProperty()
     created_date = db.DateTimeProperty(auto_now_add=True)
     email = db.EmailProperty()
