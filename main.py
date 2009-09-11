@@ -71,7 +71,7 @@ class ProjectHandler(BaseRequest):
         if output is None:
             try:
                 project = Project.all().filter('slug =', slug).fetch(1)[0]        
-                issues = Issue.all().filter('project =', project).order('fixed').order('created_date')
+                issues = Issue.all().filter('project =', project)
             except IndexError:
                 self.render_404()
                 return 
@@ -373,7 +373,7 @@ class IssueHandler(BaseRequest):
         if output is None:
             try:
                 issue = Issue.all().filter('internal_url =', "/%s/%s/" % (project_slug, issue_slug)).fetch(1)[0]
-                issues = Issue.all().filter('project =', issue.project).filter('name !=', issue.name).filter('fixed =', False).order('name').order('-created_date').fetch(10)
+                issues = Issue.all().filter('project =', issue.project).filter('fixed =', False).fetch(10)
             except IndexError:
                 self.render_404()
                 return

@@ -33,7 +33,7 @@ indexes:
   - name: created_date
     direction: desc
 
-# Used 9 times in query history.
+# Used 13 times in query history.
 - kind: Issue
   properties:
   - name: project

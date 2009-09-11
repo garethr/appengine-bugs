@@ -1,21 +1,3 @@
-h2. Details
-
-Appengine Bugs is the code behind the "GitBug":http://gitbug.appspot.com site, released as Open Source so people can run a private instance easily. It's purposefully simple rather than feature packed but you can always add another feature if you like.
-
-h2. Installation
-
-Two small changes are required if you want to get this up and running
-
-First change the application name (currently gitbug) in the app.yml file. Appengine ensures these are unique and match the application name you registered through the console.
-
-Next change the SYSTEM_URL constant in the settings.py file to the URL you're hosting it from. This is at the moment only used to make sure all links in feeds point to the right place.
-
-h2. Credits
-
-Gareth Rushgrove ("morethanseven.net":http://morethanseven.net)
-
-h2. License
-
 The MIT License
  
 Copyright (c) 2009 Gareth Rushgrove
